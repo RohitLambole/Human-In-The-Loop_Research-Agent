@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: researchos-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: researchos
+      POSTGRES_USER: researchos
+      POSTGRES_PASSWORD: researchos
+    ports:
+      - "5434:5432"
+    volumes:
+      - researchos_pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U researchos -d researchos"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  researchos_pgdata:
